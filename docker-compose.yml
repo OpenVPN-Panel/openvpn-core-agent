@@ -1,0 +1,45 @@
+networks:
+  openvpn_net:
+    driver: bridge
+
+services:
+  openvpn:
+    build: openvpn-utils
+    container_name: openvpn
+    env_file:
+      - .env
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+    volumes:
+      - openvpn_server:/etc/openvpn/server
+      - openvpn_home:/root/openvpn/
+      - ./scripts:/root/openvpn/scripts
+    restart: unless-stopped
+    ports:
+      - "1194:1194/udp"
+      - "${MGMT_PORT}:${MGMT_PORT}"
+    networks:
+      - openvpn_net
+
+  openvpn-agent:
+    build: openvpn-agent
+    container_name: openvpn-agent
+    env_file:
+      - .env
+    volumes:
+      - openvpn_server:/etc/openvpn/server
+      - openvpn_home:/root/openvpn/
+      - ./scripts:/root/openvpn/scripts
+    environment:
+      - CLIENT_CONFIG_DIR=/root/openvpn/clients-configs/files
+      - MGMT_ADDRESS=openvpn
+    networks:
+      - openvpn_net
+    ports:
+      - "48000:48000"
+
+volumes:
+  openvpn_server:
+  openvpn_home:

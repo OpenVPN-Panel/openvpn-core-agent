@@ -1,0 +1,6 @@
+[submodule "openvpn-agent"]
+	path = openvpn-agent
+	url = https://github.com/OpenVPN-Panel/openvpn-agent.git
+[submodule "openvpn-utils"]
+	path = openvpn-utils
+	url = https://github.com/OpenVPN-Panel/openvpn-utils.git
